@@ -1,7 +1,8 @@
 export async function onRequestGet(context) {
   try {
     // URL에서 [id] 부분(파일명)을 가져옵니다.
-    const filename = context.params.id; 
+    // 💡 핵심 수정: 브라우저가 변환한 %20 등의 URL 특수문자를 원래의 띄어쓰기로 복원합니다.
+    const filename = decodeURIComponent(context.params.id); 
     
     if (!filename) {
       return new Response("파일명이 필요합니다.", { status: 400 });

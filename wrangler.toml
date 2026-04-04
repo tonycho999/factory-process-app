@@ -9,9 +9,12 @@ pages_build_output_dir = "dist"
 
 # D1 데이터베이스 연결 설정
 [[d1_databases]]
-# 백엔드 코드(functions)에서 사용할 변수명
 binding = "DB" 
-# Cloudflare 대시보드에서 생성한 D1 데이터베이스의 이름 (필요시 실제 이름으로 수정)
 database_name = "factory-process-app" 
-# 발급받은 실제 데이터베이스 ID 적용 완료
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "factory-attachments"
+
 database_id = "eadd57f7-6110-4807-9e7b-9fa734b78cb2"
+

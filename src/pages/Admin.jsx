@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TaskTable from '../components/TaskTable';
 
-// 💡 한국 시간(KST) 기준 오늘 날짜를 구하는 함수
 const getTodayKST = () => {
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
@@ -13,7 +12,9 @@ export default function Admin() {
   const [tasks, setTasks] = useState([]);
   const [file, setFile] = useState(null);
   
-  // 💡 초기값을 오늘 날짜로 고정
+  // 💡 파일 입력칸을 직접 제어하기 위한 ref 생성
+  const fileInputRef = useRef(null);
+  
   const [formData, setFormData] = useState({ 
     title: '', 
     content: '', 
@@ -56,12 +57,16 @@ export default function Admin() {
       body: JSON.stringify({ ...formData, attachment_url }),
     });
     
-    // 💡 폼 제출 후 초기화할 때도 날짜는 계속 '오늘'로 유지
+    // 텍스트와 날짜 데이터 초기화
     setFormData({ title: '', content: '', work_date: getTodayKST() });
     
-    // 파일 상태 및 실제 파일 입력칸(UI) 비우기
+    // 메모리 상의 파일 데이터 지우기
     setFile(null);
-    document.getElementById('fileInput').value = "";
+    
+    // 💡 화면 상의 파일 입력칸 강제 리셋 (처음 화면으로 돌아감)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     
     fetchTasks();
   };
@@ -80,7 +85,6 @@ export default function Admin() {
         <input type="text" placeholder="제목" required className="border p-3 rounded" value={formData.title} onChange={e=>setFormData({...formData, title:e.target.value})} />
         <textarea placeholder="내용" required className="border p-3 rounded h-24" value={formData.content} onChange={e=>setFormData({...formData, content:e.target.value})} />
         
-        {/* 💡 날짜 입력칸을 읽기 전용(readOnly)으로 바꾸고, 클릭할 수 없게 디자인 변경 */}
         <input 
           type="date" 
           required 
@@ -90,9 +94,14 @@ export default function Admin() {
           title="작업일은 오늘 날짜로 고정됩니다."
         />
         
-        <div className="border p-3 rounded bg-gray-50">
+        <div className="border p-3 rounded bg-gray-50 flex items-center">
           <label className="text-sm font-bold text-gray-600 mr-4">📎 도면/지시서 첨부:</label>
-          <input id="fileInput" type="file" onChange={e => setFile(e.target.files[0])} />
+          <input 
+            type="file" 
+            ref={fileInputRef} // 💡 생성한 ref를 여기에 연결
+            onChange={e => setFile(e.target.files[0])} 
+            className="text-sm"
+          />
         </div>
         
         <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded">작업 지시 생성</button>

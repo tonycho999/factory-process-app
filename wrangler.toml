@@ -1,20 +1,14 @@
-# 프로젝트 이름
 name = "factory-process-app"
-
-# 호환성 날짜 (현재 날짜 기준)
 compatibility_date = "2026-04-04"
-
-# 프론트엔드 빌드 결과물이 생성되는 폴더
 pages_build_output_dir = "dist"
 
-# D1 데이터베이스 연결 설정
+# D1 데이터베이스 설정
 [[d1_databases]]
 binding = "DB" 
 database_name = "factory-process-app" 
+database_id = "eadd57f7-6110-4807-9e7b-9fa734b78cb2" 
 
+# R2 파일 저장소 설정
 [[r2_buckets]]
 binding = "R2"
 bucket_name = "factory-attachments"
-
-database_id = "eadd57f7-6110-4807-9e7b-9fa734b78cb2"
-

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import TaskCard from '../components/TaskCard';
 // Worker.jsx 내부의 상태 변경 함수
 const requestDelete = async (taskId) => {
   if(!confirm("관리자에게 이 작업의 삭제를 요청하시겠습니까?")) return;

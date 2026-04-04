@@ -5,18 +5,26 @@ export default function Admin() {
   const [tasks, setTasks] = useState([]);
   const [formData, setFormData] = useState({ title: '', content: '', work_date: '' });
 
+  // DB에서 최신 작업 목록을 가져오는 함수
   const fetchTasks = async () => {
     try {
       const response = await fetch('/api/tasks');
       const data = await response.json();
-      setTasks(data);
+      setTasks(data); // 화면 업데이트
     } catch (error) {
       console.error("데이터 불러오기 실패:", error);
     }
   };
 
+  // 💡 핵심 변경 부분: 화면이 켜지면 5초마다 자동 갱신
   useEffect(() => {
-    fetchTasks();
+    fetchTasks(); // 최초 접속 시 1번 실행
+    
+    // 5초(5000ms)마다 fetchTasks를 몰래 실행해서 표를 최신 상태로 바꿉니다.
+    const intervalId = setInterval(fetchTasks, 5000); 
+    
+    // 다른 화면으로 이동하면 타이머를 꺼서 메모리 낭비를 막습니다.
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -29,14 +37,13 @@ export default function Admin() {
       });
       
       if (!response.ok) {
-        // 서버에서 던진 에러 메시지를 화면에 팝업으로 띄움
         const errText = await response.text();
         alert(`작업 생성 실패 (서버 원인): ${errText}`);
         return;
       }
       
       setFormData({ title: '', content: '', work_date: '' });
-      fetchTasks(); 
+      fetchTasks(); // 내가 생성한 직후에도 표를 즉시 새로고침
     } catch (err) {
       alert(`통신 오류: ${err.message}`);
     }
